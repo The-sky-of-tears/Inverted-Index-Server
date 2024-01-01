@@ -83,8 +83,6 @@ public class InvertedIndex {
                 .split("\\W+");
         HashSet<String> result = index.get(words[0]);
 
-        // TODO
-        //  need to add multithreading for retainAll
         for (String word : words) {
             result.retainAll(index.get(word));
         }
