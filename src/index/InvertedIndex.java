@@ -5,6 +5,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -12,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 public class InvertedIndex {
 
-    private final ConcurrentHashMap<String, HashSet<String>> index;
+    private final ConcurrentHashMap<String, Set<String>> index;
     private final ThreadPoolExecutor threadPool;
 
     public InvertedIndex(Path startDirectory, Integer numOfThreads) {
@@ -31,8 +32,9 @@ public class InvertedIndex {
         }
 
         double end = System.currentTimeMillis();
-        System.out.println((end - start) / 1000d);
-        System.out.println(index.size());
+        System.out.printf("Indexing time: %.3f\n", (end - start) / 1000d);
+        System.out.printf("Words indexed: %d\n", index.size());
+//        printIndex();
     }
 
     private void buildIndex(Path directory) {
@@ -65,11 +67,7 @@ public class InvertedIndex {
                     .split("\\W+");
 
             for (String word : words) {
-                index.putIfAbsent(word, new HashSet<>());
-                //TODO
-                // add to HashSet is not thread safe,
-                // probability of exception is extremely low,
-                // however, need to work it around
+                index.putIfAbsent(word, ConcurrentHashMap.newKeySet());
                 index.get(word).add(path.toString());
             }
 
@@ -78,12 +76,19 @@ public class InvertedIndex {
         }
     }
 
-    public HashSet<String> find(String phrase) {
+    private void printIndex() {
+        for (var entry : index.entrySet()) {
+            System.out.println(entry.getKey() + " " + entry.getValue());
+        }
+    }
+
+    public Set<String> find(String phrase) {
 
         String[] words = phrase
                 .toLowerCase()
                 .split("\\W+");
-        HashSet<String> result = index.get(words[0]);
+
+        Set<String> result = index.get(words[0]);
 
         for (String word : words) {
             result.retainAll(index.get(word));
