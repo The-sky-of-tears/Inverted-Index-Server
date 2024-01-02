@@ -34,7 +34,7 @@
 
 Для написання клієнта необхідно зважати на наступний протокол:
 
-![Protocol](https://github.com/The-sky-of-tears/Inverted-Index-Server/assets/86189712/391df45a-900e-40e0-8b23-7f28ea3dc75d)
+![Protocol](https://github.com/The-sky-of-tears/Inverted-Index-Server/assets/86189712/84461962-e4b3-402e-882a-59bddc764b61)
 
 Приклад написання клієнта на мові Java можна найти за наступним посиланням: <br>
 https://github.com/The-sky-of-tears/Inverted-Index-Client
